@@ -1,3 +1,5 @@
+import { RemoveTimeout } from "../constants/contants"
+
 class SchedulerService {
   constructor() {
     /** @type {Map<number, number>} Pool of the active timeouts*/
@@ -33,6 +35,19 @@ class SchedulerService {
   discardAllTimeouts() {
     this.timeoutsPool.forEach((timeoutID) => clearTimeout(timeoutID))
     this.timeoutsPool.clear()
+  }
+
+  /**
+   * Remove message after timeout
+   * @param {Number} ms value in ms
+   * @param {Object} ctx context of the bot
+   * @param {Number} message_id message to remove  
+   */
+  removeMessageAfter(ms, ctx, message_id) {
+    this.setActiveTimeout({
+      id: message_id,
+      callback: () => ctx.deleteMessage(message_id),
+    }, ms || RemoveTimeout)
   }
 }
 
